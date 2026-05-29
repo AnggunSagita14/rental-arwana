@@ -56,6 +56,8 @@ http://localhost:8080/rental-arwana/
 🌐 Hosted Website
 Project dapat diakses melalui link berikut:
 https://mushroom-paltry-poem.ngrok-free.dev/rental-arwana/
+username saat login: pashanggunamu) 
+password: mbdasik
 
 Catatan Penting
 Website menggunakan layanan **ngrok**, sehingga link dapat diakses oleh pengguna lain melalui internet ketika pemilik project menjalankan:
