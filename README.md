@@ -42,24 +42,11 @@ miniprojectmbd.sql
 4. Atur Koneksi Database
 Edit file:
 koneksi.php
-Contoh konfigurasi:
-
-php id="a6"
-<?php
-
-$conn = new PDO(
-    "mysql:host=localhost;port=3307;dbname=miniprojectmbd",
-    "root",
-    ""
-);
-
-?>
 
 5. Jalankan Project
 Aktifkan:
 * Apache
 * MySQL
-
 Lalu buka browser dan akses: 
 http://localhost/rental-arwana/
 
