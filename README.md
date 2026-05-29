@@ -20,7 +20,7 @@ Aplikasi dibuat menggunakan:
 * JavaScript
 
 👥 Anggota Kelompok
-1. Faturrahman Pasha — D1041241002Anggun Sagita — D1041241085
+1. Faturrahman Pasha — D1041241002
 2. Oktavia Namu Erdita — D1041241072
 3. Anggun Sagita — D1041241085
 
