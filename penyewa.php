@@ -164,25 +164,6 @@ body{
     transform:translateY(-2px);
 }
 
-.logout a{
-
-    text-decoration:none;
-
-    background:white;
-
-    color:#2563eb;
-
-    height:55px;
-
-    border-radius:18px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    font-weight:600;
-}
-
 /* MAIN */
 
 .main{
@@ -570,7 +551,8 @@ td{
 
 <tr>
 
-    <th>Nama Penyewa</th>
+    <th>ID Penyewa</th>
+<th>Nama Penyewa</th>
     <th>No HP</th>
     <th>No KTP</th>
     <th>No SIM A</th>
@@ -595,9 +577,11 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 <tr>
 
     <td>
+        <?= $row['id_penyewa']; ?>
+    </td>
 
+    <td>
         <?= $row['nama_penyewa']; ?>
-
     </td>
 
     <td>
@@ -642,17 +626,17 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
     </button>
 
+  <button
+class="action-btn edit"
+onclick="window.location.href='edit_penyewa.php?id=<?= $row['id_penyewa']; ?>'">
+
+    <i class="fa-solid fa-pen"></i>
+
+</button>
+
     <button
-    class="action-btn edit"
-    onclick="editPenyewa(this)">
-
-        <i class="fa-solid fa-pen"></i>
-
-    </button>
-
-    <button
-    class="action-btn delete"
-    onclick="hapusPenyewa(this)">
+class="action-btn delete"
+onclick="if(confirm('Hapus data ini?')) window.location.href='hapus_penyewa.php?id=<?= $row['id_penyewa']; ?>'">
 
         <i class="fa-solid fa-trash"></i>
 
@@ -681,13 +665,15 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
         <h2>Tambah Penyewa</h2>
 
+        <form action="tambah_penyewa.php" method="POST">
+
         <br>
 
         <div class="form-group">
 
     <label>Nama Penyewa</label>
 
-    <input type="text" id="nama">
+    <input type="text" name="nama">
 
 </div>
 
@@ -695,7 +681,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
     <label>No HP</label>
 
-    <input type="text" id="hp">
+    <input type="text" name="hp">
 
 </div>
 
@@ -703,7 +689,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
     <label>No KTP</label>
 
-    <input type="text" id="ktp">
+    <input type="text" name="ktp">
 
 </div>
 
@@ -711,7 +697,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
     <label>No SIM A</label>
 
-    <input type="text" id="sim">
+    <input type="text" name="sim">
 
 </div>
 
@@ -719,7 +705,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
     <label>Tanggal Lahir</label>
 
-    <input type="date" id="lahir">
+    <input type="date" name="lahir">
 
 </div>
 
@@ -727,29 +713,34 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
     <label>Alamat</label>
 
-    <input type="text" id="alamat">
+   <input type="text" name="alamat">
 
 </div>
 
-        <div class="modal-buttons">
+       <div class="modal-buttons">
 
-            <button class="cancel"
-            onclick="closeModal()">
+    <button
+    type="button"
+    class="cancel"
+    onclick="closeModal()">
 
-                Batal
+        Batal
 
-            </button>
+    </button>
 
-           <button class="save"
-onclick="tambahPenyewa()">
+    <button
+    type="submit"
+    class="save">
 
-                Simpan
+        Simpan
 
-            </button>
+    </button>
 
-        </div>
+</div>
 
-    </div>
+</form>
+
+</div>
 
 </div>
 
@@ -757,17 +748,18 @@ onclick="tambahPenyewa()">
 
 function openModal(){
 
-    if(editRow == null){
-
-        document.getElementById("nama").value = "";
-        document.getElementById("hp").value = "";
-        document.getElementById("ktp").value = "";
-        document.getElementById("sim").value = "";
-        document.getElementById("lahir").value = "";
-        document.getElementById("alamat").value = "";
-    }
-
     document.getElementById("modal").style.display = "flex";
+
+}
+
+if(editRow == null){
+
+    document.getElementById("nama").value = "";
+    document.getElementById("hp").value = "";
+    document.getElementById("ktp").value = "";
+    document.getElementById("sim").value = "";
+    document.getElementById("lahir").value = "";
+    document.getElementById("alamat").value = "";
 }
 
 function closeModal(){
@@ -821,125 +813,6 @@ function editPenyewa(button){
     kolom[5].innerText;
 
     openModal();
-}
-
-function tambahPenyewa(){
-
-    let nama =
-    document.getElementById("nama").value;
-
-    let hp =
-    document.getElementById("hp").value;
-
-    let ktp =
-    document.getElementById("ktp").value;
-
-    let sim =
-    document.getElementById("sim").value;
-
-    let lahir =
-    document.getElementById("lahir").value;
-
-    let alamat =
-    document.getElementById("alamat").value;
-
-    if(editRow != null){
-
-        editRow.innerHTML = `
-
-        <td>${nama}</td>
-        <td>${hp}</td>
-        <td>${ktp}</td>
-        <td>${sim}</td>
-        <td>${lahir}</td>
-        <td>${alamat}</td>
-
-        <td>
-
-            <div class="actions">
-
-                <button
-                class="action-btn detail"
-                onclick="togglePenyewa(this)">
-
-                    <i class="fa-solid fa-eye"></i>
-
-                </button>
-
-                <button
-                class="action-btn edit"
-                onclick="editPenyewa(this)">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                </button>
-
-                <button
-                class="action-btn delete"
-                onclick="hapusPenyewa(this)">
-
-                    <i class="fa-solid fa-trash"></i>
-
-                </button>
-
-            </div>
-
-        </td>
-        `;
-
-        editRow = null;
-    }
-
-    else{
-
-        document.getElementById("penyewaTable").innerHTML += `
-
-        <tr>
-
-            <td>${nama}</td>
-            <td>${hp}</td>
-            <td>${ktp}</td>
-            <td>${sim}</td>
-            <td>${lahir}</td>
-            <td>${alamat}</td>
-
-            <td>
-
-                <div class="actions">
-
-                    <button
-                    class="action-btn detail"
-                    onclick="togglePenyewa(this)">
-
-                        <i class="fa-solid fa-eye"></i>
-
-                    </button>
-
-                    <button
-                    class="action-btn edit"
-                    onclick="editPenyewa(this)">
-
-                        <i class="fa-solid fa-pen"></i>
-
-                    </button>
-
-                    <button
-                    class="action-btn delete"
-                    onclick="hapusPenyewa(this)">
-
-                        <i class="fa-solid fa-trash"></i>
-
-                    </button>
-
-                </div>
-
-            </td>
-
-        </tr>
-        `;
-    }
-
-    closeModal();
 }
 
 function searchData(){

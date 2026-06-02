@@ -636,7 +636,7 @@ WHERE status_pembayaran IS NULL
 
 <div class="stat-card">
 
-    <h3>Belum Lunas</h3>
+    <!-- <h3>Belum Lunas</h3> -->
 
     <h1>
         <?= $totalBelum['total']; ?>
@@ -659,6 +659,7 @@ WHERE status_pembayaran IS NULL
     <th>Penyewa</th>
     <th>Mobil</th>
     <th>Total Bayar</th>
+    <th>Jenis</th>
     <th>Metode</th>
     <th>Status</th>
     <th>Aksi</th>
@@ -716,6 +717,10 @@ if(strtolower($row['status_pembayaran']) == "lunas"){
     </td>
 
     <td>
+    <?= $row['jenis_pembayaran']; ?>
+</td>
+
+    <td>
         <?= $row['metode_pembayaran']; ?>
     </td>
 
@@ -741,17 +746,17 @@ if(strtolower($row['status_pembayaran']) == "lunas"){
 
     </button>
 
-    <button
-    class="action-btn edit"
-    onclick="editPembayaran(this)">
+<button
+class="action-btn edit"
+onclick="window.location='edit_pembayaran.php?id=<?= $row['id_pembayaran']; ?>'">
 
         <i class="fa-solid fa-pen"></i>
 
     </button>
 
-    <button
-    class="action-btn delete"
-    onclick="hapusPembayaran(this)">
+<button
+class="action-btn delete"
+onclick="hapusPembayaran('<?= $row['id_pembayaran']; ?>')">
 
         <i class="fa-solid fa-trash"></i>
 
@@ -775,82 +780,68 @@ if(strtolower($row['status_pembayaran']) == "lunas"){
 
 <!-- MODAL -->
 
-<div class="modal" id="modal">
-
-<div class="modal-content">
-
-<h2>Tambah Pembayaran</h2>
-
-<br>
+<form action="tambah_pembayaran.php" method="POST">
 
 <div class="form-group">
-
-<label>Nama Penyewa</label>
-
-<input type="text" id="penyewa">
-
+<label>ID Pembayaran</label>
+<input type="text" name="id_pembayaran">
 </div>
 
 <div class="form-group">
-
-<label>Mobil</label>
-
-<input type="text" id="mobil">
-
+<label>ID Transaksi</label>
+<input type="text" name="id_transaksi">
 </div>
 
 <div class="form-group">
-
-<label>Total Bayar</label>
-
-<input type="text" id="total">
-
+<label>Tanggal Pembayaran</label>
+<input type="date" name="tanggal_pembayaran">
 </div>
 
 <div class="form-group">
+<label>Jenis Pembayaran</label>
+<select name="jenis_pembayaran">
+<option value="PELUNASAN">PELUNASAN</option>
+<option value="DENDA">DENDA</option>
+</select>
+</div>
 
+<div class="form-group">
+<label>Jumlah Pembayaran</label>
+<input type="number" name="jumlah_pembayaran">
+</div>
+
+<div class="form-group">
 <label>Metode Pembayaran</label>
-
-<select id="metode">
-
-<option>Transfer</option>
-<option>Cash</option>
-<option>E-Wallet</option>
-
+<select name="metode_pembayaran">
+<option value="CASH">CASH</option>
+<option value="TRANSFER">TRANSFER</option>
+<option value="E-WALLET">E-WALLET</option>
 </select>
-
 </div>
 
-<div class="form-group">
-
-<label>Status Pembayaran</label>
-
-<select id="status">
-
-<option>Lunas</option>
-<option>Belum Lunas</option>
-
-</select>
-
-</div>
+<input
+type="hidden"
+name="status_pembayaran"
+value="LUNAS">
 
 <div class="modal-buttons">
 
-<button class="cancel"
+<button
+type="button"
+class="cancel"
 onclick="closeModal()">
-
 Batal
-
 </button>
 
-<button class="save"
-onclick="tambahPembayaran()">
-
+<button
+type="submit"
+class="save">
 Simpan
-
 </button>
 
 </div>
+
+</form>
 
 </div>
 
@@ -889,11 +880,12 @@ function togglePembayaran(button){
 
 /* HAPUS */
 
-function hapusPembayaran(button){
+function hapusPembayaran(id){
 
     if(confirm("Yakin ingin menghapus pembayaran?")){
 
-        button.closest("tr").remove();
+        window.location =
+        "hapus_pembayaran.php?id=" + id;
     }
 }
 
@@ -921,11 +913,14 @@ function editPembayaran(button){
     .replaceAll(".","")
     .trim();
 
-    document.getElementById("metode").value =
-    kolom[3].innerText.trim();
+    document.getElementById("jenis").value =
+kolom[3].innerText.trim();
 
-    document.getElementById("status").value =
-    kolom[4].innerText.trim();
+document.getElementById("metode").value =
+kolom[4].innerText.trim();
+
+document.getElementById("status").value =
+kolom[5].innerText.trim();
 
     openModal();
 }
@@ -942,6 +937,9 @@ function tambahPembayaran(){
 
     let total =
     document.getElementById("total").value;
+
+    let jenis =
+document.getElementById("jenis").value;
 
     let metode =
     document.getElementById("metode").value;
@@ -963,7 +961,7 @@ function tambahPembayaran(){
     <td>
         Rp ${parseInt(total).toLocaleString('id-ID')}
     </td>
-
+<td>${jenis}</td>
     <td>${metode}</td>
 
     <td>

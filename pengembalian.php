@@ -372,7 +372,6 @@ td{
     display:flex;
     gap:10px;
 }
-
 .action-btn{
 
     width:40px;
@@ -385,6 +384,10 @@ td{
     color:white;
 
     cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 .detail{
     background:#2563eb;
@@ -756,39 +759,37 @@ if($row['status_pengembalian'] == "TERLAMBAT"){
     </td>
 
     <td>
+        <td>
 
 <div class="actions">
 
-    <!-- DETAIL -->
-    <button
-    class="action-btn detail"
-    onclick="togglePengembalian(this)">
+<button
+class="action-btn detail"
+onclick="togglePengembalian(this)">
 
-        <i class="fa-solid fa-eye"></i>
+<i class="fa-solid fa-eye"></i>
 
-    </button>
+</button>
 
-    <!-- EDIT -->
-    <button
-    class="action-btn edit"
-    onclick="editPengembalian(this)">
+<button
+class="action-btn edit"
+onclick="window.location='edit_pengembalian.php?id=<?= $row['id_pengembalian']; ?>'">
 
-        <i class="fa-solid fa-pen"></i>
+<i class="fa-solid fa-pen"></i>
 
-    </button>
+</button>
 
-    <!-- HAPUS -->
-    <button
-    class="action-btn delete"
-    onclick="hapusPengembalian(this)">
+<button
+class="action-btn delete"
+onclick="hapusPengembalian('<?= $row['id_pengembalian']; ?>')">
 
-        <i class="fa-solid fa-trash"></i>
+<i class="fa-solid fa-trash"></i>
 
-    </button>
+</button>
 
 </div>
 
-    </td>
+</td>
 
 </tr>
 
@@ -810,13 +811,16 @@ if($row['status_pengembalian'] == "TERLAMBAT"){
 
 <h2>Tambah Pengembalian</h2>
 
-<br>
+<form action="tambah_pengembalian.php" method="POST">
 
 <div class="form-group">
 
 <label>ID Pengembalian</label>
 
-<input type="text" id="id_pengembalian">
+<input
+type="text"
+name="id_pengembalian"
+required>
 
 </div>
 
@@ -824,7 +828,10 @@ if($row['status_pengembalian'] == "TERLAMBAT"){
 
 <label>ID Transaksi</label>
 
-<input type="text" id="id_transaksi">
+<input
+type="text"
+name="id_transaksi"
+required>
 
 </div>
 
@@ -832,7 +839,10 @@ if($row['status_pengembalian'] == "TERLAMBAT"){
 
 <label>Tanggal Kembali</label>
 
-<input type="date" id="tanggal_kembali">
+<input
+type="date"
+name="tanggal_kembali"
+required>
 
 </div>
 
@@ -840,18 +850,26 @@ if($row['status_pengembalian'] == "TERLAMBAT"){
 
 <label>Keterlambatan</label>
 
-<input type="number" id="keterlambatan">
+<input
+type="number"
+name="keterlambatan"
+value="0">
 
 </div>
 
 <div class="form-group">
 
-<label>Status</label>
+<label>Status Pengembalian</label>
 
-<select id="status_pengembalian">
+<select name="status_pengembalian">
 
-<option>DIKEMBALIKAN</option>
-<option>TERLAMBAT</option>
+<option value="DIKEMBALIKAN">
+DIKEMBALIKAN
+</option>
+
+<option value="TERLAMBAT">
+TERLAMBAT
+</option>
 
 </select>
 
@@ -859,15 +877,18 @@ if($row['status_pengembalian'] == "TERLAMBAT"){
 
 <div class="modal-buttons">
 
-<button class="cancel"
+<button
+type="button"
+class="cancel"
 onclick="closeModal()">
 
 Batal
 
 </button>
 
-<button class="save"
-onclick="tambahPengembalian()">
+<button
+type="submit"
+class="save">
 
 Simpan
 
@@ -875,441 +896,11 @@ Simpan
 
 </div>
 
-</div>
+</form>
 
 </div>
-<script>
 
-function openModal(){
-
-    document.getElementById("modal").style.display = "flex";
-}
-
-function closeModal(){
-
-    document.getElementById("modal").style.display = "none";
-}
-
-/* =========================
-   SEARCH
-========================= */
-
-function searchData(){
-
-    let input =
-    document.getElementById("searchInput")
-    .value
-    .toLowerCase();
-
-    let tr =
-    document.querySelectorAll("#pengembalianTable tr");
-
-    tr.forEach(row => {
-
-        let text =
-        row.innerText.toLowerCase();
-
-        if(text.includes(input)){
-
-            row.style.display = "";
-
-        }else{
-
-            row.style.display = "none";
-        }
-    });
-}
-
-/* =========================
-   DETAIL / MATA
-========================= */
-
-function togglePengembalian(button){
-
-    let row = button.closest("tr");
-
-    if(row.style.opacity == "0.4"){
-
-        row.style.opacity = "1";
-
-    }else{
-
-        row.style.opacity = "0.4";
-    }
-}
-
-/* =========================
-   HAPUS
-========================= */
-
-function hapusPengembalian(button){
-
-    if(confirm("Yakin ingin menghapus data pengembalian?")){
-
-        button.closest("tr").remove();
-    }
-}
-
-/* =========================
-   EDIT
-========================= */
-
-let editRow = null;
-
-function editPengembalian(button){
-
-    editRow =
-    button.closest("tr");
-
-    let kolom =
-    editRow.querySelectorAll("td");
-
-    document.getElementById("id_pengembalian").value =
-    kolom[0].innerText.trim();
-
-    document.getElementById("id_transaksi").value =
-    kolom[1].innerText.trim();
-
-    document.getElementById("tanggal_kembali").value =
-    kolom[2].innerText.trim();
-
-    let keterlambatan =
-    kolom[3].innerText
-    .replace("Hari","")
-    .trim();
-
-    document.getElementById("keterlambatan").value =
-    parseInt(keterlambatan);
-
-    document.getElementById("status_pengembalian").value =
-    kolom[4].innerText.trim();
-
-    openModal();
-}
-
-/* =========================
-   TAMBAH + UPDATE
-========================= */
-
-function tambahPengembalian(){
-
-    let id_pengembalian =
-    document.getElementById("id_pengembalian").value;
-
-    let id_transaksi =
-    document.getElementById("id_transaksi").value;
-
-    let tanggal_kembali =
-    document.getElementById("tanggal_kembali").value;
-
-    let keterlambatan =
-    document.getElementById("keterlambatan").value;
-
-    let status_pengembalian =
-    document.getElementById("status_pengembalian").value;
-
-    let statusClass =
-    status_pengembalian == "TERLAMBAT"
-    ? "terlambat"
-    : "dikembalikan";
-
-    let rowHTML = `
-
-    <td>${id_pengembalian}</td>
-
-    <td>${id_transaksi}</td>
-
-    <td>${tanggal_kembali}</td>
-
-    <td>${keterlambatan} Hari</td>
-
-    <td>
-
-        <span class="status ${statusClass}">
-
-            ${status_pengembalian}
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <div class="actions">
-
-            <button
-            class="action-btn detail"
-            onclick="togglePengembalian(this)">
-
-                <i class="fa-solid fa-eye"></i>
-
-            </button>
-
-            <button
-            class="action-btn edit"
-            onclick="editPengembalian(this)">
-
-                <i class="fa-solid fa-pen"></i>
-
-            </button>
-
-            <button
-            class="action-btn delete"
-            onclick="hapusPengembalian(this)">
-
-                <i class="fa-solid fa-trash"></i>
-
-            </button>
-
-        </div>
-
-    </td>
-    `;
-
-    /* UPDATE */
-
-    if(editRow != null){
-
-        editRow.innerHTML = rowHTML;
-
-        editRow = null;
-
-        closeModal();
-
-        return;
-    }
-
-    /* TAMBAH */
-
-    let tr =
-    document.createElement("tr");
-
-    tr.innerHTML = rowHTML;
-
-    document
-    .getElementById("pengembalianTable")
-    .appendChild(tr);
-
-    closeModal();
-}
-
-</script>
-<script>
-
-function openModal(){
-
-    document.getElementById("modal").style.display = "flex";
-}
-
-function closeModal(){
-
-    document.getElementById("modal").style.display = "none";
-}
-
-/* =========================
-   SEARCH
-========================= */
-
-function searchData(){
-
-    let input =
-    document.getElementById("searchInput")
-    .value
-    .toLowerCase();
-
-    let tr =
-    document.querySelectorAll("#pengembalianTable tr");
-
-    tr.forEach(row => {
-
-        let text =
-        row.innerText.toLowerCase();
-
-        if(text.includes(input)){
-
-            row.style.display = "";
-
-        }else{
-
-            row.style.display = "none";
-        }
-    });
-}
-
-/* =========================
-   DETAIL / MATA
-========================= */
-
-function togglePengembalian(button){
-
-    let row = button.closest("tr");
-
-    if(row.style.opacity == "0.4"){
-
-        row.style.opacity = "1";
-
-    }else{
-
-        row.style.opacity = "0.4";
-    }
-}
-
-/* =========================
-   HAPUS
-========================= */
-
-function hapusPengembalian(button){
-
-    if(confirm("Yakin ingin menghapus data pengembalian?")){
-
-        button.closest("tr").remove();
-    }
-}
-
-/* =========================
-   EDIT
-========================= */
-
-let editRow = null;
-
-function editPengembalian(button){
-
-    editRow =
-    button.closest("tr");
-
-    let kolom =
-    editRow.querySelectorAll("td");
-
-    document.getElementById("id_pengembalian").value =
-    kolom[0].innerText.trim();
-
-    document.getElementById("id_transaksi").value =
-    kolom[1].innerText.trim();
-
-    document.getElementById("tanggal_kembali").value =
-    kolom[2].innerText.trim();
-
-    let keterlambatan =
-    kolom[3].innerText
-    .replace("Hari","")
-    .trim();
-
-    document.getElementById("keterlambatan").value =
-    parseInt(keterlambatan);
-
-    document.getElementById("status_pengembalian").value =
-    kolom[4].innerText.trim();
-
-    openModal();
-}
-
-/* =========================
-   TAMBAH + UPDATE
-========================= */
-
-function tambahPengembalian(){
-
-    let id_pengembalian =
-    document.getElementById("id_pengembalian").value;
-
-    let id_transaksi =
-    document.getElementById("id_transaksi").value;
-
-    let tanggal_kembali =
-    document.getElementById("tanggal_kembali").value;
-
-    let keterlambatan =
-    document.getElementById("keterlambatan").value;
-
-    let status_pengembalian =
-    document.getElementById("status_pengembalian").value;
-
-    let statusClass =
-    status_pengembalian == "TERLAMBAT"
-    ? "terlambat"
-    : "dikembalikan";
-
-    let rowHTML = `
-
-    <td>${id_pengembalian}</td>
-
-    <td>${id_transaksi}</td>
-
-    <td>${tanggal_kembali}</td>
-
-    <td>${keterlambatan} Hari</td>
-
-    <td>
-
-        <span class="status ${statusClass}">
-
-            ${status_pengembalian}
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <div class="actions">
-
-            <button
-            class="action-btn detail"
-            onclick="togglePengembalian(this)">
-
-                <i class="fa-solid fa-eye"></i>
-
-            </button>
-
-            <button
-            class="action-btn edit"
-            onclick="editPengembalian(this)">
-
-                <i class="fa-solid fa-pen"></i>
-
-            </button>
-
-            <button
-            class="action-btn delete"
-            onclick="hapusPengembalian(this)">
-
-                <i class="fa-solid fa-trash"></i>
-
-            </button>
-
-        </div>
-
-    </td>
-    `;
-
-    /* UPDATE */
-
-    if(editRow != null){
-
-        editRow.innerHTML = rowHTML;
-
-        editRow = null;
-
-        closeModal();
-
-        return;
-    }
-
-    /* TAMBAH */
-
-    let tr =
-    document.createElement("tr");
-
-    tr.innerHTML = rowHTML;
-
-    document
-    .getElementById("pengembalianTable")
-    .appendChild(tr);
-
-    closeModal();
-}
-
-</script>
+</div>
 <script>
 
 function openModal(){

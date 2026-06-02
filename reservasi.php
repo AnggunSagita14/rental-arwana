@@ -660,8 +660,8 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
             </button>
 
             <button
-            class="action-btn delete"
-            onclick="hapusReservasi(this)">
+class="action-btn delete"
+onclick="hapusReservasi('<?= $row['id_reservasi']; ?>')">
 
                 <i class="fa-solid fa-trash"></i>
 
@@ -690,6 +690,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
     <div class="modal-content">
 
         <h2>Tambah Reservasi</h2>
+        <form id="reservasiForm" method="POST">
 
         <br>
 
@@ -697,7 +698,9 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
             <label>ID Reservasi</label>
 
-            <input type="text" id="id_reservasi">
+            <input type="text"
+id="id_reservasi"
+name="id_reservasi">
 
         </div>
 
@@ -705,7 +708,9 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
             <label>ID Admin</label>
 
-            <input type="text" id="id_admin">
+            <input type="text"
+id="id_admin"
+name="id_admin">
 
         </div>
 
@@ -713,7 +718,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
             <label>ID Penyewa</label>
 
-            <input type="text" id="id_penyewa">
+            <input type="text" id="id_penyewa" name="id_penyewa">
 
         </div>
 
@@ -721,7 +726,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
             <label>ID Mobil</label>
 
-            <input type="text" id="id_mobil">
+            <input type="text" id="id_mobil" name="id_mobil">
 
         </div>
 
@@ -729,7 +734,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
             <label>Tanggal Reservasi</label>
 
-            <input type="date" id="tanggal_reservasi">
+            <input type="date" id="tanggal_reservasi" name="tanggal_reservasi">
 
         </div>
 
@@ -737,7 +742,7 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
             <label>Status Reservasi</label>
 
-            <select id="status_reservasi">
+            <select id="status_reservasi" name="status_reservasi">
 
                 <option>disetujui</option>
 
@@ -747,24 +752,25 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
         <div class="modal-buttons">
 
-            <button
-            class="cancel"
-            onclick="closeModal()">
+           <button
+type="button"
+class="cancel"
+onclick="closeModal()">
 
-                Batal
+    Batal
 
-            </button>
+</button>
 
-            <button
-            class="save"
-            onclick="tambahReservasi()">
+<button
+type="submit"
+class="save">
 
-                Simpan
+    Simpan
 
-            </button>
+</button>
 
         </div>
-
+</form>
     </div>
 
 </div>
@@ -773,7 +779,10 @@ while($row = $query->fetch(PDO::FETCH_ASSOC)){
 
 function openModal(){
 
-    document.getElementById("modal").style.display = "flex";
+    document.getElementById("modal").style.display="flex";
+
+    document.getElementById("reservasiForm").action =
+    "tambah_reservasi.php";
 }
 
 function closeModal(){
@@ -795,177 +804,32 @@ function toggleReservasi(button){
     }
 }
 
-function hapusReservasi(button){
+function hapusReservasi(id){
 
-    button.closest("tr").remove();
+    if(confirm("Yakin ingin menghapus reservasi?")){
+
+        window.location =
+        "hapus_reservasi.php?id=" + id;
+    }
 }
 
 let editRow = null;
 
 function editReservasi(button){
 
-    editRow = button.closest("tr");
-
-    let kolom = editRow.querySelectorAll("td");
+    let row = button.closest("tr");
+    let kolom = row.querySelectorAll("td");
 
     document.getElementById("id_reservasi").value =
-    kolom[0].innerText;
+    kolom[0].innerText.trim();
 
     document.getElementById("id_admin").value =
-    kolom[1].innerText;
-
-    document.getElementById("id_penyewa").value =
-    kolom[2].innerText;
-
-    document.getElementById("id_mobil").value =
-    kolom[3].innerText;
-
-    document.getElementById("tanggal_reservasi").value =
-    kolom[4].innerText;
-
-    document.getElementById("status_reservasi").value =
-    kolom[5].innerText.trim();
+    kolom[1].innerText.trim();
 
     openModal();
-}
 
-function tambahReservasi(){
-
-    let id_reservasi =
-    document.getElementById("id_reservasi").value;
-
-    let id_admin =
-    document.getElementById("id_admin").value;
-
-    let id_penyewa =
-    document.getElementById("id_penyewa").value;
-
-    let id_mobil =
-    document.getElementById("id_mobil").value;
-
-    let tanggal_reservasi =
-    document.getElementById("tanggal_reservasi").value;
-
-    let status_reservasi =
-    document.getElementById("status_reservasi").value;
-
-    let badgeClass = "selesai";
-
-    if(status_reservasi.toLowerCase() == "disetujui"){
-
-        badgeClass = "selesai";
-    }
-
-    // EDIT DATA
-    if(editRow != null){
-
-        editRow.innerHTML = `
-
-        <td>${id_reservasi}</td>
-        <td>${id_admin}</td>
-        <td>${id_penyewa}</td>
-        <td>${id_mobil}</td>
-        <td>${tanggal_reservasi}</td>
-
-        <td>
-            <span class="status ${badgeClass}">
-                ${status_reservasi}
-            </span>
-        </td>
-
-        <td>
-
-            <div class="actions">
-
-                <button
-                class="action-btn detail"
-                onclick="toggleReservasi(this)">
-
-                    <i class="fa-solid fa-eye"></i>
-
-                </button>
-
-                <button
-                class="action-btn edit"
-                onclick="editReservasi(this)">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                </button>
-
-                <button
-                class="action-btn delete"
-                onclick="hapusReservasi(this)">
-
-                    <i class="fa-solid fa-trash"></i>
-
-                </button>
-
-            </div>
-
-        </td>
-        `;
-
-        editRow = null;
-
-        closeModal();
-
-        return;
-    }
-
-    // TAMBAH DATA BARU
-    document.getElementById("reservasiTable").innerHTML += `
-
-    <tr>
-
-        <td>${id_reservasi}</td>
-        <td>${id_admin}</td>
-        <td>${id_penyewa}</td>
-        <td>${id_mobil}</td>
-        <td>${tanggal_reservasi}</td>
-
-        <td>
-            <span class="status ${badgeClass}">
-                ${status_reservasi}
-            </span>
-        </td>
-
-        <td>
-
-            <div class="actions">
-
-                <button
-                class="action-btn detail"
-                onclick="toggleReservasi(this)">
-
-                    <i class="fa-solid fa-eye"></i>
-
-                </button>
-
-                <button
-                class="action-btn edit"
-                onclick="editReservasi(this)">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                </button>
-
-                <button
-                class="action-btn delete"
-                onclick="hapusReservasi(this)">
-
-                    <i class="fa-solid fa-trash"></i>
-
-                </button>
-
-            </div>
-
-        </td>
-
-    </tr>
-    `;
-
-    closeModal();
+    document.getElementById("reservasiForm").action =
+    "edit_reservasi.php";
 }
 
 function searchData(){

@@ -693,17 +693,17 @@ border-radius:14px;
 
     <div class="actions">
 
+       <button
+class="action-btn edit"
+onclick="window.location.href='edit_mobil.php?id=<?= $row['id_mobil']; ?>'">
+
+<i class="fa-solid fa-pen"></i>
+
+</button>
+
         <button
-        class="action-btn edit"
-        onclick="editMobil(this)">
-
-            <i class="fa-solid fa-pen"></i>
-
-        </button>
-
-        <button
-        class="action-btn delete"
-        onclick="hapusMobil(this)">
+class="action-btn delete"
+onclick="if(confirm('Hapus mobil ini?')) window.location.href='hapus_mobil.php?id=<?= $row['id_mobil']; ?>'">
 
             <i class="fa-solid fa-trash"></i>
 
@@ -723,6 +723,7 @@ border-radius:14px;
 <div class="modal" id="modal">
 
     <div class="modal-content">
+        <form action="tambah_mobil.php" method="POST">
 
         <h2>Tambah Mobil</h2>
 
@@ -730,7 +731,7 @@ border-radius:14px;
 
             <label>Nama Mobil</label>
 
-            <input type="text" id="namaMobil">
+            <input type="text" name="merk">
 
         </div>
 
@@ -738,7 +739,7 @@ border-radius:14px;
 
             <label>Plat Nomor</label>
 
-            <input type="text" id="platMobil">
+            <input type="text" name="plat">
 
         </div>
 
@@ -746,15 +747,15 @@ border-radius:14px;
 
             <label>Seat</label>
 
-            <input type="number" id="seatMobil">
+            <input type="text" name="seat">
 
         </div>
 
         <div class="form-group">
 
             <label>Tarif</label>
-
-            <input type="text" id="tarifMobil">
+                <input type="number" name="tarif">
+            
 
         </div>
 
@@ -762,9 +763,10 @@ border-radius:14px;
 
             <label>Status</label>
 
-            <select id="statusMobil">
+            <select name="status">
 
-               <option>Tersedia</option> 
+               <option value="Tersedia">Tersedia</option>
+               <option value="Disewa">Disewa</option>
 
            </select> 
 
@@ -777,16 +779,16 @@ border-radius:14px;
 
                 Batal
 
-            </button>
-
-            <button class="save"
-            onclick="tambahMobil()">
+            <button
+            type="submit"
+            class="save">
 
                 Simpan
 
             </button>
 
         </div>
+        </form>
 
     </div>
 
@@ -819,164 +821,6 @@ function toggleMobil(button){
 
         row.style.opacity = "0.3";
     }
-}
-
-/* HAPUS */
-
-function hapusMobil(button){
-
-    if(confirm("Yakin ingin menghapus mobil?")){
-
-        button.closest("tr").remove();
-    }
-}
-
-/* EDIT */
-
-let editRow = null;
-
-function editMobil(button){
-
-    editRow =
-    button.closest("tr");
-
-    let kolom =
-    editRow.querySelectorAll("td");
-
-    document.getElementById("namaMobil").value =
-    kolom[0].innerText.trim();
-
-    document.getElementById("platMobil").value =
-    kolom[1].innerText.trim();
-
-    document.getElementById("seatMobil").value =
-    kolom[2].innerText.trim();
-
-    document.getElementById("tarifMobil").value =
-    kolom[3].innerText
-    .replace("Rp","")
-    .replaceAll(".","")
-    .trim();
-
-    document.getElementById("statusMobil").value =
-    kolom[4].innerText.trim();
-
-    openModal();
-}
-
-/* TAMBAH */
-
-function tambahMobil(){
-
-    let nama =
-    document.getElementById("namaMobil").value;
-
-    let plat =
-    document.getElementById("platMobil").value;
-
-    let seat =
-    document.getElementById("seatMobil").value;
-
-    let tarif =
-    document.getElementById("tarifMobil").value;
-
-    let status =
-    document.getElementById("statusMobil").value;
-
-    let kelas =
-    status == "Tersedia"
-    ? "available"
-    : "rented";
-
-    let rowHTML = `
-
-    <td>
-
-        <div class="car">
-
-            <img src="camry.jpg">
-
-            ${nama}
-
-        </div>
-
-    </td>
-
-    <td>${plat}</td>
-
-    <td>${seat}</td>
-
-    <td>Rp ${tarif}</td>
-
-    <td>
-
-        <span class="status ${kelas}">
-
-            ${status}
-
-        </span>
-
-    </td>
-
-    <td>
-
-        <div class="actions">
-
-            <button
-            class="action-btn detail"
-            onclick="toggleMobil(this)">
-
-                <i class="fa-solid fa-eye"></i>
-
-            </button>
-
-            <button
-            class="action-btn edit"
-            onclick="editMobil(this)">
-
-                <i class="fa-solid fa-pen"></i>
-
-            </button>
-
-            <button
-            class="action-btn delete"
-            onclick="hapusMobil(this)">
-
-                <i class="fa-solid fa-trash"></i>
-
-            </button>
-
-        </div>
-
-    </td>
-    `;
-
-    /* EDIT */
-
-    if(editRow != null){
-
-        editRow.innerHTML =
-        rowHTML;
-
-        editRow = null;
-    }
-
-    /* TAMBAH */
-
-    else{
-
-        let tr =
-        document.createElement("tr");
-
-        tr.innerHTML =
-        rowHTML;
-
-        document
-        .getElementById("mobilTable")
-        .appendChild(tr);
-    }
-
-    closeModal();
 }
 
 </script>
